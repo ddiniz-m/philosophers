@@ -6,11 +6,47 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 17:57:50 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/04/24 17:58:21 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/08 17:46:37 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
+
+void	terminate_threads(t_program *program)
+{
+	int	i;
+
+	i = 0;
+	while (i < program->n_philo)
+		pthread_detach(program->thread[i++]);
+	exit (0);
+}
+
+int	get_time(void)
+{
+	struct timeval time;
+	
+	gettimeofday(&time, NULL);
+	return((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
+
+int	ft_is_prime(int nb)
+{
+	int	i;
+
+	i = 2;
+	if (nb < 2)
+		return (0);
+	if (nb == 2)
+		return (1);
+	while (i <= nb / i)
+	{
+		if (nb % i == 0)
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 int	ft_atoi(const char *str)
 {

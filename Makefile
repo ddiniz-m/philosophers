@@ -10,7 +10,7 @@ INC = -lpthread
 
 NAME = philo
 CC = @cc
-CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=thread #-fsanitize=address
 RM = rm -rf
 
 all: $(NAME)
@@ -24,10 +24,10 @@ $(OBJS_DIR)/%.o: $(SRCS)
 		@$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
-		@$(RM) $(OBJS)
+		@$(RM) $(OBJS) $(OBJS_DIR)
 
 fclean: clean
-		@$(RM) $(NAME) $(OBJS_DIR)
+		@$(RM) $(NAME)
 
 re: fclean all
 
