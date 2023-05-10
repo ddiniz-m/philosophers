@@ -6,31 +6,48 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 14:20:00 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/08 18:50:26 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/10 17:10:20 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 #include <stdlib.h>
 
-void	eat(t_philo *philo, int i)
+void		dead_check(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->prog->lock);
-	philo->prog->forks[i - 1] = 1;
-	if (i == 1)
-		philo->prog->forks[philo->prog->n_philo - 1] = 1;
-	else
-		philo->prog->forks[i - 2] = 1;
-	printf("%-10d Philo %i is eating\n", get_time() - philo->prog->time_start, i);
-	usleep(philo->prog->t_eat);
-	philo->last_meal = get_time() - philo->prog->time_start;
-	printf("%-10d Philo %i finnished eating\n", get_time() - philo->prog->time_start, i);
-	philo->prog->forks[i - 1] = 0;
-	if (i == 1)
-		philo->prog->forks[philo->prog->n_philo - 1] = 0;
-	else
-		philo->prog->forks[i - 2] = 0;
+	if (time_elapse(philo) - philo->last_meal > philo->prog->t_die / 1000)
+		{
+			printf("%-10d Philo %i died\n", time_elapse(philo), philo->id);
+			exit (0);
+		}
 	pthread_mutex_unlock(&philo->prog->lock);
+	return ;
+}
+
+void	eat(t_philo *philo, int i)
+{
+	
+	if (philo->id == 1)
+			pthread_mutex_lock(&philo->prog->forks[philo->prog->n_philo - 1]);
+	else
+			pthread_mutex_lock(&philo->prog->forks[philo->id - 2]);
+	pthread_mutex_lock(&philo->prog->forks[philo->id - 1]);
+
+	printf("%-10d Philo %i has taken a fork\n", time_elapse(philo), i);
+	printf("%-10d Philo %i is eating\n", time_elapse(philo), i);
+	usleep(philo->prog->t_eat);
+	
+	philo->last_meal = time_elapse(philo);
+	
+	/* printf("time elapsed = %i\nphilo %i\n, time_elapse(philo), philo->id) */
+	dead_check(philo);
+
+	if (philo->id == 1)
+		pthread_mutex_unlock(&philo->prog->forks[philo->prog->n_philo - 1]);
+	else
+		pthread_mutex_unlock(&philo->prog->forks[philo->id - 2]);
+	pthread_mutex_unlock(&philo->prog->forks[philo->id - 1]);
 }
 
 void	*routine(void *arg)
@@ -41,18 +58,17 @@ void	*routine(void *arg)
 	philo->prog->time_start = get_time();
 	while(1)
 	{
+		dead_check(philo);
+		
 		eat(philo, philo->id);
-		printf("%-10d Philo %i is sleeping\n", get_time() - philo->prog->time_start, philo->id);
+		
+		printf("%-10d Philo %i is sleeping\n", time_elapse(philo), philo->id);
 		usleep(philo->prog->t_sleep);
-		/* pthread_mutex_lock(&philo->prog->lock); */
-		printf("gettime - start = %i\nlast = %i\n _die = %i\n", get_time() - philo->prog->time_start, philo->last_meal, philo->prog->t_die / 1000);
-		if (get_time() - philo->prog->time_start - philo->last_meal > philo->prog->t_die / 1000)
-		{
-			printf("%-10d Philo %i died\n", get_time() - philo->prog->time_start, philo->id);
-			exit (0);
-		}
-		/* pthread_mutex_unlock(&philo->prog->lock); */
-		/* usleep(1000); */
+
+		pthread_mutex_lock(&philo->prog->lock);
+		printf("%-10d Philo %i is thinking\n", time_elapse(philo), philo->id);
+		pthread_mutex_unlock(&philo->prog->lock);
+
 	}
 	return (NULL);
 }
@@ -62,8 +78,6 @@ t_philo	philo_init(t_program *program)
 	t_philo	philo;
 
 	philo.prog = program;
-	philo.last_meal = 0;
-	/* philo.n_eat = 0; */
 
 	return (philo);
 }
@@ -77,6 +91,7 @@ void	create_thread(t_program *program, int n)
 	{
 		program->philosophers[i] = philo_init(program);
 		program->philosophers[i].id = i + 1;
+		program->philosophers[i].last_meal = 0;
 		if (pthread_create(&program->thread[i], NULL, routine, &program->philosophers[i])
 			!= 0)
 			return(perror("Thread Create"));
@@ -107,9 +122,10 @@ t_program	*program_init(char **av)
 
 	//threads && mutex
 	program->thread = malloc(program->n_philo * sizeof(pthread_t));
-	program->forks = malloc(program->n_philo * sizeof(int));
-	while (i < program->n_philo)
-		program->forks[i++] = 0;
+	program->forks = malloc(program->n_philo * sizeof(pthread_mutex_t));
+	pthread_mutex_init(&program->lock, NULL);
+	while(i < program->n_philo)
+		pthread_mutex_init(&program->forks[i++], NULL);
 	
 	//variables
 	program->t_die = ft_atoi(av[2]) * 1000;
@@ -126,9 +142,13 @@ int	main(int ac, char **av)
 		return (printf("Not enough arguments\n"));
 
 	program = program_init(av);
-
-	pthread_mutex_init(&program->lock, NULL);
+	
 	create_thread(program, program->n_philo);
-	pthread_mutex_destroy(&program->lock);
+
+	/* pthread_mutex_destroy(&program->left);
+	pthread_mutex_destroy(&program->right); */
+	int i = 0;
+	while(i < program->n_philo)
+		pthread_mutex_destroy(&program->forks[i++]);
 	return (0);
 }

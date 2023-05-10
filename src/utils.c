@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 17:57:50 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/08 17:46:37 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/09 15:57:55 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@ void	terminate_threads(t_program *program)
 	while (i < program->n_philo)
 		pthread_detach(program->thread[i++]);
 	exit (0);
+}
+
+int	time_elapse(t_philo *philo)
+{
+	return(get_time() - philo->prog->time_start);
 }
 
 int	get_time(void)
