@@ -1,6 +1,6 @@
 # - * - Makefile - * -
 
-SRC_PHI = main.c utils.c
+SRC_PHI = check.c init.c main.c routine.c utils.c
 
 SRCS = $(addprefix src/, $(SRC_PHI))
 OBJS = $(patsubst src/%, $(OBJS_DIR)/%, $(SRCS:%.c=%.o))
@@ -10,7 +10,7 @@ INC = -lpthread
 
 NAME = philo
 CC = @cc
-CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=thread #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 RM = rm -rf
 
 all: $(NAME)

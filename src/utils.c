@@ -6,58 +6,48 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 17:57:50 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/09 15:57:55 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/12 18:33:48 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	terminate_threads(t_program *program)
+void	ft_free(t_program *program)
 {
 	int	i;
 
 	i = 0;
 	while (i < program->n_philo)
-		pthread_detach(program->thread[i++]);
-	exit (0);
+	{
+		pthread_mutex_destroy(&program->forks[i]);
+		pthread_detach(program->thread[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&program->lock);
+	free(program->forks);
+	free(program->thread);
+	free(program->philosophers);
+	free(program);
 }
 
 int	time_elapse(t_philo *philo)
 {
-	return(get_time() - philo->prog->time_start);
+	return (get_time() - philo->prog->time_start);
 }
 
 int	get_time(void)
 {
-	struct timeval time;
-	
+	struct timeval	time;
+
 	gettimeofday(&time, NULL);
-	return((time.tv_sec * 1000) + (time.tv_usec / 1000));
-}
-
-int	ft_is_prime(int nb)
-{
-	int	i;
-
-	i = 2;
-	if (nb < 2)
-		return (0);
-	if (nb == 2)
-		return (1);
-	while (i <= nb / i)
-	{
-		if (nb % i == 0)
-			return (0);
-		i++;
-	}
-	return (1);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
 int	ft_atoi(const char *str)
 {
-	int	i;
-	int	num;
-	int	sign;
+	int			i;
+	long int	num;
+	int			sign;
 
 	i = 0;
 	num = 0;
@@ -76,5 +66,7 @@ int	ft_atoi(const char *str)
 		num = (str[i] - '0') + (num * 10);
 		i++;
 	}
+	if ((num * sign > 2147483647) || (num * sign < -2147483648))
+		return (-1);
 	return (num * sign);
 }

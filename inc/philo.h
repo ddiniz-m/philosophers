@@ -6,30 +6,31 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 14:53:32 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/10 16:16:27 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/12 18:05:52 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-#include <pthread.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/time.h>
-#include <stdlib.h>
+# include <pthread.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <sys/time.h>
+# include <stdlib.h>
 
 typedef struct s_philo
 {
 	struct s_program	*prog;
 	int					id;
 	int					last_meal;
+	int					n_eat;
 }				t_philo;
 
 typedef struct s_program
 {
 	pthread_mutex_t	*forks;
-	pthread_mutex_t lock;
+	pthread_mutex_t	lock;
 	pthread_t		*thread;
 	int				n_philo;
 	t_philo			*philosophers;
@@ -37,12 +38,24 @@ typedef struct s_program
 	int				t_eat;
 	int				t_sleep;
 	int				time_start;
+	int				max_meals;
 }				t_program;
 
-int		ft_atoi(const char *str);
-int		ft_is_prime(int nb);
-int		get_time(void);
-int		time_elapse(t_philo *philo);
-void	terminate_threads(t_program *program);
+//check.c
+int			arg_check(int ac, char **av);
+int			die_eat_check(t_program *program);
+
+//init.c
+t_program	*program_init(char **av);
+t_philo		philo_program_init(t_program *program);
+
+//routine.c
+void		*routine(void *arg);
+
+//utils.c
+int			ft_atoi(const char *str);
+int			get_time(void);
+int			time_elapse(t_philo *philo);
+void		ft_free(t_program *program);
 
 #endif
