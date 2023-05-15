@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 14:53:32 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/12 18:05:52 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/15 18:28:40 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 
 # include <pthread.h>
 # include <stdio.h>
-# include <unistd.h>
-# include <sys/time.h>
 # include <stdlib.h>
+# include <sys/time.h>
+# include <unistd.h>
 
 typedef struct s_philo
 {
@@ -25,37 +25,39 @@ typedef struct s_philo
 	int					id;
 	int					last_meal;
 	int					n_eat;
-}				t_philo;
+}						t_philo;
 
 typedef struct s_program
 {
-	pthread_mutex_t	*forks;
-	pthread_mutex_t	lock;
-	pthread_t		*thread;
-	int				n_philo;
-	t_philo			*philosophers;
-	int				t_die;
-	int				t_eat;
-	int				t_sleep;
-	int				time_start;
-	int				max_meals;
-}				t_program;
+	pthread_mutex_t		*forks;
+	pthread_mutex_t		lock;
+	pthread_mutex_t		message;
+	pthread_t			*thread;
+	int					n_philo;
+	t_philo				*philosophers;
+	int					t_die;
+	int					t_eat;
+	int					t_sleep;
+	int					time_start;
+	int					max_meals;
+}						t_program;
 
 //check.c
-int			arg_check(int ac, char **av);
-int			die_eat_check(t_program *program);
+int						arg_check(int ac, char **av);
+int						die_eat_check(t_program *program);
 
 //init.c
-t_program	*program_init(char **av);
-t_philo		philo_program_init(t_program *program);
+t_program				*program_init(char **av);
+void					mutex_init(t_program *program);
+t_philo					philo_program_init(t_program *program);
 
 //routine.c
-void		*routine(void *arg);
+void					*routine(void *arg);
 
 //utils.c
-int			ft_atoi(const char *str);
-int			get_time(void);
-int			time_elapse(t_philo *philo);
-void		ft_free(t_program *program);
+int						ft_atoi(const char *str);
+int						get_time(void);
+int						time_elapse(t_philo *philo);
+void					ft_free(t_program *program);
 
 #endif

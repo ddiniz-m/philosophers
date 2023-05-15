@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:19:42 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/12 18:39:09 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/15 18:33:25 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ int	die_eat_check(t_program *program)
 	j = 0;
 	while (i < program->n_philo)
 	{
-		if (program->philosophers[i].last_meal + (program->t_die / 1000) + 10
-			< (get_time() - program->time_start))
+		if (program->philosophers[i].last_meal + (program->t_die / 1000) < (get_time() - program->time_start))
 		{
 			printf("%-10d Philo %i \033[0;31mdied\033[0m\n", (get_time()
 					- program->time_start), program->philosophers[i].id);
@@ -49,4 +48,3 @@ int	arg_check(int ac, char **av)
 	}
 	return (0);
 }
-

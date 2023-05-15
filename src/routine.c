@@ -6,24 +6,37 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:18:07 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/12 18:46:04 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/15 18:28:30 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	eat(t_philo *philo, int i)
+void	lock_forks(t_philo *philo)
 {
 	if (philo->id == 1)
 		pthread_mutex_lock(&philo->prog->forks[philo->prog->n_philo - 1]);
 	else
 		pthread_mutex_lock(&philo->prog->forks[philo->id - 2]);
 	pthread_mutex_lock(&philo->prog->forks[philo->id - 1]);
-	printf("%-10d Philo %i has taken a fork\n", time_elapse(philo), i);
-	printf("%-10d Philo %i is \033[0;32meating\033[0m\n", time_elapse(philo), i);
+}
+
+void	message(t_philo *philo, char *str)
+{
+	pthread_mutex_lock(&philo->prog->message);
+	printf("%-10d Philo %i %s\n", time_elapse(philo), philo->id, str);
+	pthread_mutex_unlock(&philo->prog->message);
+}
+
+void	eat(t_philo *philo)
+{	
 	philo->last_meal = time_elapse(philo);
 	philo->n_eat++;
 	usleep(philo->prog->t_eat);
+}
+
+void	unlock_forks(t_philo *philo)
+{
 	if (philo->id == 1)
 		pthread_mutex_unlock(&philo->prog->forks[philo->prog->n_philo - 1]);
 	else
@@ -38,15 +51,14 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	while (1)
 	{
-		if (!philo->prog->max_meals || philo->n_eat != philo->prog->max_meals)
-			eat(philo, philo->id);
-		/* pthread_mutex_lock(&philo->prog->lock); */
-		printf("%-10d Philo %i is sleeping\n", time_elapse(philo), philo->id);
-		/* pthread_mutex_unlock(&philo->prog->lock); */
+		lock_forks(philo);
+		message(philo, "has taken two forks");
+		message(philo, "is \033[0;32meating\033[0m");
+		eat(philo);
+		unlock_forks(philo);
+		message(philo, "is sleeping");
 		usleep(philo->prog->t_sleep);
-		pthread_mutex_lock(&philo->prog->lock);
-		printf("%-10d Philo %i is thinking\n", time_elapse(philo), philo->id);
-		pthread_mutex_unlock(&philo->prog->lock);
+		message(philo, "is thinking");
 	}
 	return (NULL);
 }
