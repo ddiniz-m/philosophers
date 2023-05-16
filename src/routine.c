@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:18:07 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/15 18:28:30 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/16 17:58:32 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,11 @@ void	lock_forks(t_philo *philo)
 
 void	message(t_philo *philo, char *str)
 {
-	pthread_mutex_lock(&philo->prog->message);
 	printf("%-10d Philo %i %s\n", time_elapse(philo), philo->id, str);
-	pthread_mutex_unlock(&philo->prog->message);
 }
 
 void	eat(t_philo *philo)
-{	
+{
 	philo->last_meal = time_elapse(philo);
 	philo->n_eat++;
 	usleep(philo->prog->t_eat);
@@ -37,11 +35,11 @@ void	eat(t_philo *philo)
 
 void	unlock_forks(t_philo *philo)
 {
+	pthread_mutex_unlock(&philo->prog->forks[philo->id - 1]);
 	if (philo->id == 1)
 		pthread_mutex_unlock(&philo->prog->forks[philo->prog->n_philo - 1]);
 	else
 		pthread_mutex_unlock(&philo->prog->forks[philo->id - 2]);
-	pthread_mutex_unlock(&philo->prog->forks[philo->id - 1]);
 }
 
 void	*routine(void *arg)
@@ -56,6 +54,8 @@ void	*routine(void *arg)
 		message(philo, "is \033[0;32meating\033[0m");
 		eat(philo);
 		unlock_forks(philo);
+		if (philo->prog->max_meals > 0 && philo->n_eat == philo->prog->max_meals)
+			while(1);
 		message(philo, "is sleeping");
 		usleep(philo->prog->t_sleep);
 		message(philo, "is thinking");

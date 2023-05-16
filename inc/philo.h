@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 14:53:32 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/15 18:28:40 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/16 15:25:37 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct s_program
 	int					t_sleep;
 	int					time_start;
 	int					max_meals;
+	int					signal;
 }						t_program;
 
 //check.c

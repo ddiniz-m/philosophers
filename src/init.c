@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:20:45 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/15 18:29:18 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/16 17:38:46 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	mutex_init(t_program *program)
 
 	i = 0;
 	pthread_mutex_init(&program->lock, NULL);
-	pthread_mutex_init(&program->message, NULL);
 	while (i < program->n_philo)
 	{
 		pthread_mutex_init(&program->forks[i], NULL);
@@ -53,6 +52,7 @@ t_program	*program_init(char **av)
 	program->t_die = ft_atoi(av[2]) * 1000;
 	program->t_eat = ft_atoi(av[3]) * 1000;
 	program->t_sleep = ft_atoi(av[4]) * 1000;
+	program->signal = 0;
 	if (av[5])
 		program->max_meals = ft_atoi(av[5]);
 	else
