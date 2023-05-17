@@ -6,24 +6,36 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:18:07 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/16 17:58:32 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/17 17:22:47 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	lock_forks(t_philo *philo)
-{
-	if (philo->id == 1)
-		pthread_mutex_lock(&philo->prog->forks[philo->prog->n_philo - 1]);
-	else
-		pthread_mutex_lock(&philo->prog->forks[philo->id - 2]);
-	pthread_mutex_lock(&philo->prog->forks[philo->id - 1]);
-}
-
 void	message(t_philo *philo, char *str)
 {
+	pthread_mutex_lock(&philo->prog->message);
 	printf("%-10d Philo %i %s\n", time_elapse(philo), philo->id, str);
+	pthread_mutex_unlock(&philo->prog->message);
+}
+
+void	lock_forks(t_philo *philo)
+{
+	int	r_fork;
+	int	l_fork;
+
+	r_fork = ((philo->id + 1) % philo->prog->n_philo);
+	l_fork = philo->id;
+	if (philo->id % 2 != 0)
+		pthread_mutex_lock(&philo->prog->forks[l_fork]);
+	else
+		pthread_mutex_lock(&philo->prog->forks[r_fork]);
+	message(philo, "has taken a fork");
+	if (philo->id % 2 != 0)
+		pthread_mutex_lock(&philo->prog->forks[r_fork]);
+	else
+		pthread_mutex_lock(&philo->prog->forks[l_fork]);
+	message(philo, "has taken a fork");
 }
 
 void	eat(t_philo *philo)
@@ -35,11 +47,8 @@ void	eat(t_philo *philo)
 
 void	unlock_forks(t_philo *philo)
 {
-	pthread_mutex_unlock(&philo->prog->forks[philo->id - 1]);
-	if (philo->id == 1)
-		pthread_mutex_unlock(&philo->prog->forks[philo->prog->n_philo - 1]);
-	else
-		pthread_mutex_unlock(&philo->prog->forks[philo->id - 2]);
+	pthread_mutex_unlock(&philo->prog->forks[philo->id]);
+	pthread_mutex_unlock(&philo->prog->forks[((philo->id + 1) % philo->prog->n_philo)]);
 }
 
 void	*routine(void *arg)
@@ -50,7 +59,6 @@ void	*routine(void *arg)
 	while (1)
 	{
 		lock_forks(philo);
-		message(philo, "has taken two forks");
 		message(philo, "is \033[0;32meating\033[0m");
 		eat(philo);
 		unlock_forks(philo);

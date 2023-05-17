@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:19:42 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/16 13:52:16 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/17 17:14:55 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	arg_check(int ac, char **av)
 	i = 1;
 	while (i < ac)
 	{
-		if (ft_atoi(av[i]) < 0)
+		if (ft_atoi(av[i]) < 0 || ft_atoi(av[1]) > 200)
 			return (1);
 		i++;
 	}

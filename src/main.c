@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 14:20:00 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/16 14:06:41 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/17 13:55:40 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ int	create_thread(t_program *program)
 	while (i < program->n_philo)
 	{
 		program->philosophers[i] = philo_program_init(program);
-		program->philosophers[i].id = i + 1;
+		program->philosophers[i].id = i;
 		program->philosophers[i].last_meal = 0;
 		program->philosophers[i].n_eat = 0;
 		if (pthread_create(&program->thread[i], NULL, routine,
 				&program->philosophers[i]) != 0)
-			return (printf("Thread Create\n"));
+			return (printf("Thread Create Error\n"));
 		i++;
 	}
 	return (0);
