@@ -10,7 +10,7 @@ INC = -lpthread
 
 NAME = philo
 CC = @cc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=thread
 RM = rm -rf
 
 all: $(NAME)
@@ -31,4 +31,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re run val
+.PHONY: all clean fclean re

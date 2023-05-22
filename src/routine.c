@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:18:07 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/17 17:22:47 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/22 15:13:39 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,9 @@ void	eat(t_philo *philo)
 void	unlock_forks(t_philo *philo)
 {
 	pthread_mutex_unlock(&philo->prog->forks[philo->id]);
-	pthread_mutex_unlock(&philo->prog->forks[((philo->id + 1) % philo->prog->n_philo)]);
+	pthread_mutex_unlock(&philo->prog->forks[((philo->id + 1)
+			% philo->prog->n_philo)]);
+	message(philo, "put down both forks");
 }
 
 void	*routine(void *arg)
@@ -62,8 +64,10 @@ void	*routine(void *arg)
 		message(philo, "is \033[0;32meating\033[0m");
 		eat(philo);
 		unlock_forks(philo);
-		if (philo->prog->max_meals > 0 && philo->n_eat == philo->prog->max_meals)
-			while(1);
+		if (philo->prog->max_meals > 0 && philo->n_eat
+			== philo->prog->max_meals)
+			while (1)
+				;
 		message(philo, "is sleeping");
 		usleep(philo->prog->t_sleep);
 		message(philo, "is thinking");

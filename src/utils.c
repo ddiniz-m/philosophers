@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 17:57:50 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/16 17:39:48 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/22 15:06:59 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ void	ft_free(t_program *program)
 
 	i = 0;
 	while (i < program->n_philo)
-		pthread_detach(program->thread[i++]);
+		pthread_mutex_destroy(&program->forks[i++]);
 	i = 0;
 	while (i < program->n_philo)
-		pthread_mutex_destroy(&program->forks[i++]);
+		pthread_detach(program->thread[i++]);
 	usleep(100);
 	free(program->philosophers);
 	free(program->forks);

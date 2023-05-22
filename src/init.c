@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:20:45 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/16 17:38:46 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/22 14:13:40 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,13 @@ void	mutex_init(t_program *program)
 t_program	*program_init(char **av)
 {
 	t_program	*program;
-	
+
 	program = (t_program *)malloc(sizeof(t_program));
 	if (!program)
 		return (NULL);
 	program->n_philo = ft_atoi(av[1]);
+	program->philosophers = (t_philo *)malloc(sizeof(t_philo)
+			* program->n_philo);
 	if (!program->philosophers)
 		return (NULL);
 	program->thread = malloc(program->n_philo * sizeof(pthread_t));
@@ -57,7 +59,5 @@ t_program	*program_init(char **av)
 		program->max_meals = ft_atoi(av[5]);
 	else
 		program->max_meals = -1;
-	program->philosophers = (t_philo *)malloc(sizeof(t_philo)
-			* program->n_philo);
 	return (program);
 }
