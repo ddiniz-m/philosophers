@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 14:20:00 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/22 15:05:25 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/24 18:05:56 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ int	main(int ac, char **av)
 		return (1);
 	while (1)
 	{
-		if (die_eat_check(program))
+		if (die_check(program) || eat_check(program))
 		{
-			ft_free(program);
+			stop_threads(program);
 			break ;
 		}
 	}

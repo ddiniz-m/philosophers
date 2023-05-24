@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 14:53:32 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/16 15:25:37 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/24 18:02:51 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ typedef struct s_philo
 	int					id;
 	int					last_meal;
 	int					n_eat;
+	int					r_fork;
+	int					l_fork;
 }						t_philo;
 
 typedef struct s_program
@@ -45,7 +47,8 @@ typedef struct s_program
 
 //check.c
 int						arg_check(int ac, char **av);
-int						die_eat_check(t_program *program);
+int						eat_check(t_program *program);
+int						die_check(t_program *program);
 
 //init.c
 t_program				*program_init(char **av);
@@ -60,5 +63,6 @@ int						ft_atoi(const char *str);
 int						get_time(void);
 int						time_elapse(t_philo *philo);
 void					ft_free(t_program *program);
+void					stop_threads(t_program *program);
 
 #endif

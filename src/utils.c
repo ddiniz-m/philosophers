@@ -6,27 +6,19 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 17:57:50 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/22 15:06:59 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/24 18:06:12 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	ft_free(t_program *program)
+void	stop_threads(t_program *program)
 {
 	int	i;
 
 	i = 0;
 	while (i < program->n_philo)
-		pthread_mutex_destroy(&program->forks[i++]);
-	i = 0;
-	while (i < program->n_philo)
 		pthread_detach(program->thread[i++]);
-	usleep(100);
-	free(program->philosophers);
-	free(program->forks);
-	free(program->thread);
-	free(program);
 }
 
 int	time_elapse(t_philo *philo)
