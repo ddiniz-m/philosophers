@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:18:07 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/24 18:13:48 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/30 19:16:45 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,12 @@
 
 void	message(t_philo *philo, char *str)
 {
-	pthread_mutex_lock(&philo->prog->message);
-	printf("%-10d Philo %i %s\n", time_elapse(philo), philo->id, str);
-	pthread_mutex_unlock(&philo->prog->message);
+	pthread_mutex_lock(&philo->prog->exit);
+	if (philo->prog->all_fed == 0 || philo->prog->philo_died == 0)
+	{
+		pthread_mutex_unlock(&philo->prog->exit);
+		printf("%-10d %i %s\n", time_elapse(philo), philo->id, str);
+	}
 }
 
 void	lock_forks(t_philo *philo)
@@ -35,17 +38,23 @@ void	lock_forks(t_philo *philo)
 
 void	eat(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->prog->lock);
+	pthread_mutex_lock(&philo->prog->eating);
 	philo->last_meal = time_elapse(philo);
 	philo->n_eat++;
-	pthread_mutex_unlock(&philo->prog->lock);
+	pthread_mutex_unlock(&philo->prog->eating);
 	usleep(philo->prog->t_eat);
 }
 
 void	unlock_forks(t_philo *philo)
 {
-	pthread_mutex_unlock(&philo->prog->forks[philo->l_fork]);
-	pthread_mutex_unlock(&philo->prog->forks[philo->r_fork]);
+	if (philo->id % 2 != 0)
+		pthread_mutex_unlock(&philo->prog->forks[philo->r_fork]);
+	else
+		pthread_mutex_unlock(&philo->prog->forks[philo->l_fork]);
+	if (philo->id % 2 != 0)
+		pthread_mutex_unlock(&philo->prog->forks[philo->l_fork]);
+	else
+		pthread_mutex_unlock(&philo->prog->forks[philo->r_fork]);
 }
 
 void	*routine(void *arg)
@@ -61,14 +70,13 @@ void	*routine(void *arg)
 		message(philo, "is \033[0;32meating\033[0m");
 		eat(philo);
 		unlock_forks(philo);
-		if (philo->prog->max_meals > 0 && philo->n_eat
-			== philo->prog->max_meals)
-			/* pthread_detach(philo->prog->thread[philo->id]); */
-			while (1)
-				;
 		message(philo, "is sleeping");
 		usleep(philo->prog->t_sleep);
 		message(philo, "is thinking");
+		pthread_mutex_lock(&philo->prog->exit);
+		if (philo->prog->philo_died || philo->prog->all_fed)
+			break ;
+		pthread_mutex_unlock(&philo->prog->exit);
 	}
 	return (NULL);
 }

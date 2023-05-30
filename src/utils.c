@@ -6,19 +6,20 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 17:57:50 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/24 18:06:12 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/30 16:54:36 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	stop_threads(t_program *program)
+void	ft_free(t_program *program)
 {
-	int	i;
-
-	i = 0;
-	while (i < program->n_philo)
-		pthread_detach(program->thread[i++]);
+	pthread_mutex_destroy(&program->exit);
+	pthread_mutex_destroy(&program->eating);
+	free(program->philosophers);
+	free(program->forks);
+	free(program->thread);
+	free(program);
 }
 
 int	time_elapse(t_philo *philo)
@@ -43,19 +44,18 @@ int	ft_atoi(const char *str)
 	i = 0;
 	num = 0;
 	sign = 1;
-	while (((str[i] >= 9) && (str[i] <= 13))
-		|| (str[i] == 32))
-		i++;
 	if ((str[i] == '+') || (str[i] == '-'))
 	{
 		if (str[i] == '-')
 			sign *= -1;
 		i++;
 	}
-	while ((str[i] >= '0') && (str[i] <= '9'))
+	while (*str)
 	{	
-		num = (str[i] - '0') + (num * 10);
-		i++;
+		num = (*str - '0') + (num * 10);
+		if (*str < '0' || *str > '9')
+			return (0);
+		str++;
 	}
 	if ((num * sign > 2147483647) || (num * sign < -2147483648))
 		return (-1);
