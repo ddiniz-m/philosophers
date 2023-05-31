@@ -6,11 +6,23 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:19:42 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/30 19:07:43 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:37:35 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
+
+int	exit_check(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->prog->exit);
+	if (philo->prog->philo_died || philo->prog->all_fed)
+	{
+		pthread_mutex_unlock(&philo->prog->exit);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->prog->exit);
+	return (0);
+}
 
 int	die_check(t_philo *philo)
 {
@@ -20,13 +32,14 @@ int	die_check(t_philo *philo)
 	while (i < philo->prog->n_philo)
 	{
 		pthread_mutex_lock(&philo->prog->eating);
-		if (time_elapse(philo) - 5 > philo[i].last_meal
+		if (time_elapse(philo) - 1 > philo[i].last_meal
 			+ (philo->prog->t_die / 1000))
 		{
 			pthread_mutex_lock(&philo->prog->exit);
 			philo->prog->philo_died = 1;
 			pthread_mutex_unlock(&philo->prog->exit);
-			printf("%-10d %i \033[0;31mdied\033[0m\n", time_elapse(philo), philo[i].id);
+			printf("%-10d %i \033[0;31mdied\033[0m\n", time_elapse(philo),
+				philo[i].id);
 			pthread_mutex_unlock(&philo->prog->eating);
 			return (1);
 		}
@@ -48,7 +61,7 @@ int	eat_check(t_philo *philo)
 		pthread_mutex_lock(&philo->prog->eating);
 		j += philo[i].n_eat;
 		if (philo->prog->max_meals && j == (philo->prog->max_meals
-			* philo->prog->n_philo))
+				* philo->prog->n_philo))
 		{
 			pthread_mutex_lock(&philo->prog->exit);
 			philo->prog->all_fed = 1;

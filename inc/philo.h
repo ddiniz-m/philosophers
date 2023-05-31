@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 14:53:32 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/30 18:24:12 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/05/31 16:59:00 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
-
 
 typedef struct s_philo
 {
@@ -54,6 +53,7 @@ int						join_threads(t_program *program);
 int						arg_check(int ac, char **av);
 int						eat_check(t_philo *philo);
 int						die_check(t_philo *philo);
+int						exit_check(t_philo *philo);
 
 //init.c
 t_program				*program_init(char **av);
