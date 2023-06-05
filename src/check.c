@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:19:42 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/31 18:37:35 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/06/05 14:09:04 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ int	die_check(t_philo *philo)
 	while (i < philo->prog->n_philo)
 	{
 		pthread_mutex_lock(&philo->prog->eating);
-		if (time_elapse(philo) - 1 > philo[i].last_meal
+		if (time_elapse(philo) > philo[i].last_meal
 			+ (philo->prog->t_die / 1000))
 		{
 			pthread_mutex_lock(&philo->prog->exit);
 			philo->prog->philo_died = 1;
 			pthread_mutex_unlock(&philo->prog->exit);
 			printf("%-10d %i \033[0;31mdied\033[0m\n", time_elapse(philo),
-				philo[i].id);
+				philo[i].id + 1);
 			pthread_mutex_unlock(&philo->prog->eating);
 			return (1);
 		}

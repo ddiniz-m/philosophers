@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 14:53:32 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/31 16:59:00 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/06/01 16:51:45 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,10 @@ t_philo					philo_program_init(t_program *program);
 void					*routine(void *arg);
 
 //utils.c
-int						ft_atoi(const char *str);
-int						get_time(void);
-int						time_elapse(t_philo *philo);
-void					stop_threads(t_program *program);
 void					ft_free(t_program *program);
+int						time_elapse(t_philo *philo);
+long long				get_time(void);
+void					ft_usleep(long long time);
+int						ft_atoi(const char *str);
 
 #endif

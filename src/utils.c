@@ -6,7 +6,7 @@
 /*   By: ddiniz-m <ddiniz-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 17:57:50 by ddiniz-m          #+#    #+#             */
-/*   Updated: 2023/05/30 16:54:36 by ddiniz-m         ###   ########.fr       */
+/*   Updated: 2023/06/01 17:01:12 by ddiniz-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,21 @@ int	time_elapse(t_philo *philo)
 	return (get_time() - philo->prog->time_start);
 }
 
-int	get_time(void)
+long long	get_time(void)
 {
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
+
+void	ft_usleep(long long time)
+{
+	long long	start;
+
+	start = get_time();
+	while (get_time() < start + (time / 1000))
+		usleep(50);
 }
 
 int	ft_atoi(const char *str)
